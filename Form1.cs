@@ -1,9 +1,4 @@
-﻿
-/*This program use a tango icon:
- * "By The people from the Tango! project (The Tango! Desktop Project) [Public domain or Public domain], via Wikimedia Commons"
- */
-
-using System;
+﻿using System;
 using System.IO;
 using System.Diagnostics;
 using System.Collections.Generic;
