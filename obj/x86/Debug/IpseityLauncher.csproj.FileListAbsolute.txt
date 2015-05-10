@@ -1,0 +1,9 @@
+C:\Users\Qsm-Cqfd\AppData\Local\Temporary Projects\IpseityLauncher\bin\Debug\IpseityLauncher.exe
+C:\Users\Qsm-Cqfd\AppData\Local\Temporary Projects\IpseityLauncher\bin\Debug\IpseityLauncher.pdb
+C:\Users\Qsm-Cqfd\AppData\Local\Temporary Projects\IpseityLauncher\obj\x86\Debug\IpseityLauncher.Form1.resources
+C:\Users\Qsm-Cqfd\AppData\Local\Temporary Projects\IpseityLauncher\obj\x86\Debug\IpseityLauncher.Properties.Resources.resources
+C:\Users\Qsm-Cqfd\AppData\Local\Temporary Projects\IpseityLauncher\obj\x86\Debug\IpseityLauncher.csproj.GenerateResource.Cache
+C:\Users\Qsm-Cqfd\AppData\Local\Temporary Projects\IpseityLauncher\obj\x86\Debug\IpseityLauncher.exe
+C:\Users\Qsm-Cqfd\AppData\Local\Temporary Projects\IpseityLauncher\obj\x86\Debug\IpseityLauncher.pdb
+C:\Users\Qsm-Cqfd\Desktop\Projet\IpseityLauncher\IpseityLauncherCSharp\IpseityLauncher\obj\x86\Debug\IpseityLauncher.exe
+C:\Users\Qsm-Cqfd\Desktop\Projet\IpseityLauncher\IpseityLauncherCSharp\IpseityLauncher\obj\x86\Debug\IpseityLauncher.pdb

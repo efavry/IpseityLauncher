@@ -1,0 +1,7 @@
+C:\Users\Qsm-Cqfd\Desktop\Projet\IpseityLauncher\IpseityLauncherCSharp\IpseityLauncher1\bin\Release\IpseityLauncher1.exe
+C:\Users\Qsm-Cqfd\Desktop\Projet\IpseityLauncher\IpseityLauncherCSharp\IpseityLauncher1\bin\Release\IpseityLauncher1.pdb
+C:\Users\Qsm-Cqfd\Desktop\Projet\IpseityLauncher\IpseityLauncherCSharp\IpseityLauncher1\obj\x86\Release\IpseityLauncher.Form1.resources
+C:\Users\Qsm-Cqfd\Desktop\Projet\IpseityLauncher\IpseityLauncherCSharp\IpseityLauncher1\obj\x86\Release\IpseityLauncher.Properties.Resources.resources
+C:\Users\Qsm-Cqfd\Desktop\Projet\IpseityLauncher\IpseityLauncherCSharp\IpseityLauncher1\obj\x86\Release\IpseityLauncher1.csproj.GenerateResource.Cache
+C:\Users\Qsm-Cqfd\Desktop\Projet\IpseityLauncher\IpseityLauncherCSharp\IpseityLauncher1\obj\x86\Release\IpseityLauncher1.exe
+C:\Users\Qsm-Cqfd\Desktop\Projet\IpseityLauncher\IpseityLauncherCSharp\IpseityLauncher1\obj\x86\Release\IpseityLauncher1.pdb
