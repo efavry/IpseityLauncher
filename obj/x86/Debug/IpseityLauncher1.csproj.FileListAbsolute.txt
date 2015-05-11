@@ -1,7 +1,0 @@
-C:\Users\Qsm-Cqfd\Desktop\Projet\IpseityLauncher\IpseityLauncherCSharp\IpseityLauncher1\obj\x86\Debug\IpseityLauncher.Form1.resources
-C:\Users\Qsm-Cqfd\Desktop\Projet\IpseityLauncher\IpseityLauncherCSharp\IpseityLauncher1\obj\x86\Debug\IpseityLauncher.Properties.Resources.resources
-C:\Users\Qsm-Cqfd\Desktop\Projet\IpseityLauncher\IpseityLauncherCSharp\IpseityLauncher1\obj\x86\Debug\IpseityLauncher1.csproj.GenerateResource.Cache
-C:\Users\Qsm-Cqfd\Desktop\Projet\IpseityLauncher\IpseityLauncherCSharp\IpseityLauncher1\bin\Debug\IpseityLauncher.exe
-C:\Users\Qsm-Cqfd\Desktop\Projet\IpseityLauncher\IpseityLauncherCSharp\IpseityLauncher1\bin\Debug\IpseityLauncher.pdb
-C:\Users\Qsm-Cqfd\Desktop\Projet\IpseityLauncher\IpseityLauncherCSharp\IpseityLauncher1\obj\x86\Debug\IpseityLauncher.exe
-C:\Users\Qsm-Cqfd\Desktop\Projet\IpseityLauncher\IpseityLauncherCSharp\IpseityLauncher1\obj\x86\Debug\IpseityLauncher.pdb

@@ -19,6 +19,7 @@ namespace IpseityLauncher
         private String stringPrologFolder;
         private Boolean boolIpseityFoundOnStart;
         private Boolean boolPrologFoundOnStart;
+        private String stringCurrentDirectory;
 
         public Form1()
         {
@@ -36,30 +37,23 @@ namespace IpseityLauncher
         {
             try
             {
-                // Get the current directory in the case of the launcher present in the ipseity folder and
-                //test the validity of the asumption.
-                String stringCurrentDirectory = Directory.GetCurrentDirectory();
-                if (File.Exists(stringCurrentDirectory + @"\app\IpseityProject\binary\1.2.2\win\Ipseity.exe"))
-                {
-                    //Hiding all that is unnecessary and put the correct path
-                    textBox_RootFolder.Text = stringCurrentDirectory;
-                    label_IpseityRootFolder.Visible = false;
-                    textBox_RootFolder.Visible = false;
-                    textBox_Status.Text = "Ipseity found. ";
-                    boolIpseityFoundOnStart=true;
-                }
+                stringCurrentDirectory = Directory.GetCurrentDirectory();
+                //detect if ipseity is in the correct folder (root folder is the same than the launcher)
+                boolIpseityFoundOnStart = this.findIpseity();
 
                 //Same here but for prolog in the program files folder
-                String string32BitProgramFilesFolder = this.Get32bitProgramFiles();
-                if(File.Exists(string32BitProgramFilesFolder + @"\pl\bin\plcon.exe"))
+                boolPrologFoundOnStart = this.findProlog();
+
+                if (!boolPrologFoundOnStart && File.Exists(stringCurrentDirectory + @"\software\SWIProlog5_6_49.exe"))
                 {
-                    //Hiding all that is unnecessary and put the correct path
-                    textBox_PrologFolder.Text = string32BitProgramFilesFolder + @"\pl";
-                    label_PrologFolder.Visible = false;
-                    textBox_PrologFolder.Visible = false;
-                    textBox_Status.Text = textBox_Status.Text + "Prolog found. ";
-                    boolPrologFoundOnStart =true;
+                    Process process = Process.Start(stringCurrentDirectory + @"\software\SWIProlog5_6_49.exe");
+                    process.WaitForExit();
+                    process.Close();
+                    textBox_Status.Text = textBox_Status.Text + "Prolog not found, try to install. ";
+                    boolPrologFoundOnStart = this.findProlog();
                 }
+
+                //if all is detected start ipseity
                 if (boolPrologFoundOnStart && boolIpseityFoundOnStart)
                 {
                     textBox_Status.Text = textBox_Status.Text + "Automatic Launch. ";
@@ -70,6 +64,46 @@ namespace IpseityLauncher
             {
                 MessageBox.Show("The launcher does not have enough right to access the current directory" + ex.ToString());
             }
+        }
+        /// <summary>
+        /// try to find ipseity
+        /// </summary>
+        /// <returns>A bollean, true if ipseity is found</returns>
+        Boolean findIpseity()
+        {
+            // Get the current directory in the case of the launcher present in the ipseity folder and
+            //test the validity of the asumption.
+            String stringCurrentDirectory = Directory.GetCurrentDirectory();
+            if (File.Exists(stringCurrentDirectory + @"\app\IpseityProject\binary\1.2.2\win\Ipseity.exe"))
+            {
+                //Hiding all that is unnecessary and put the correct path
+                textBox_RootFolder.Text = stringCurrentDirectory;
+                label_IpseityRootFolder.Visible = false;
+                textBox_RootFolder.Visible = false;
+                textBox_Status.Text = textBox_Status.Text + "Ipseity found. ";
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Try to find prolog in the standart instalation folder.
+        /// </summary>
+        /// <returns>A boolean, true if prolog is found</returns>
+        Boolean findProlog()
+        {
+            //Same here but for prolog in the program files folder
+            String string32BitProgramFilesFolder = this.Get32bitProgramFiles();
+            if (File.Exists(string32BitProgramFilesFolder + @"\pl\bin\plcon.exe"))
+            {
+                //Hiding all that is unnecessary and put the correct path
+                textBox_PrologFolder.Text = string32BitProgramFilesFolder + @"\pl";
+                label_PrologFolder.Visible = false;
+                textBox_PrologFolder.Visible = false;
+                textBox_Status.Text = textBox_Status.Text + "Prolog found. ";
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
