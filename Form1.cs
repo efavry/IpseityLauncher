@@ -38,20 +38,19 @@ namespace IpseityLauncher
             try
             {
                 stringCurrentDirectory = Directory.GetCurrentDirectory();
+
                 //detect if ipseity is in the correct folder (root folder is the same than the launcher)
                 boolIpseityFoundOnStart = this.findIpseity();
 
                 //Same here but for prolog in the program files folder
                 boolPrologFoundOnStart = this.findProlog();
 
-                if (!boolPrologFoundOnStart && File.Exists(stringCurrentDirectory + @"\software\SWIProlog5_6_49.exe"))
-                {
-                    Process process = Process.Start(stringCurrentDirectory + @"\software\SWIProlog5_6_49.exe");
-                    process.WaitForExit();
-                    process.Close();
-                    textBox_Status.Text = textBox_Status.Text + "Prolog not found, try to install. ";
-                    boolPrologFoundOnStart = this.findProlog();
-                }
+
+                //if prolog not found, try to find ?
+                boolPrologFoundOnStart = this.findPrologRecursively();
+
+                //if prolog not found, execute installer ?
+                boolPrologFoundOnStart = this.installProlog();
 
                 //if all is detected start ipseity
                 if (boolPrologFoundOnStart && boolIpseityFoundOnStart)
@@ -65,6 +64,52 @@ namespace IpseityLauncher
                 MessageBox.Show("The launcher does not have enough right to access the current directory" + ex.ToString());
             }
         }
+
+        /// <summary>
+        /// we try to install prolog
+        /// </summary>
+        /// <returns>if prolog is succesful in installing return true, false otherwise</returns>
+        private bool installProlog()
+        {
+            if (this.askIfUserWantToInstallProlog())
+            {
+                if (!boolPrologFoundOnStart && File.Exists(stringCurrentDirectory + @"\software\SWIProlog5_6_49.exe"))
+                {
+                    Process process = Process.Start(stringCurrentDirectory + @"\software\SWIProlog5_6_49.exe");
+                    process.WaitForExit();
+                    process.Close();
+                    textBox_Status.Text = textBox_Status.Text + "Prolog not found, try to install. ";
+                    return this.findProlog();
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// if not found on start in the program files path we ask the user if the program
+        /// can search prolog from the root direcgtory of ipseity
+        /// </summary>
+        /// <returns>true of prolog found, false otherwise</returns>
+
+        private bool findPrologRecursively()
+        {
+            String prologOnRecursiveSearch = null;
+            if (!boolPrologFoundOnStart && boolIpseityFoundOnStart && this.askIfUserWantToSearchProlog())
+            {
+                prologOnRecursiveSearch = this.directorySearch(stringIpseityRootFolder, "plcon.exe");
+                if (prologOnRecursiveSearch != null)
+                {
+                    //Hiding all that is unnecessary and put the correct path
+                    textBox_PrologFolder.Text = prologOnRecursiveSearch;
+                    label_PrologFolder.Visible = false;
+                    textBox_PrologFolder.Visible = false;
+                    textBox_Status.Text = textBox_Status.Text + "Prolog found. ";
+                    return true;
+                }
+            }
+            return false;
+        }
+
         /// <summary>
         /// try to find ipseity
         /// </summary>
@@ -163,6 +208,7 @@ namespace IpseityLauncher
 
                 //Finally launching
                 Process.Start(processIpseity);
+                
 
             }
             else
@@ -199,6 +245,67 @@ namespace IpseityLauncher
                 return Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
             }
             return System.Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFiles);
+        }
+
+        /// <summary>
+        /// This function ask the user if he want the program to search automattically
+        /// prolog
+        /// </summary>
+        /// <returns>If the user answer yes then it return true</returns>
+        private Boolean askIfUserWantToSearchProlog()
+        {
+            String message = "Prolog not found in the classical path, do you want the software to try to find it automatically?";
+            String caption = "Warning : Prolog not clearly find";
+            MessageBoxButtons buttons = MessageBoxButtons.YesNo;
+            return MessageBox.Show(message, caption, buttons)==System.Windows.Forms.DialogResult.Yes;
+        }
+
+        /// <summary>
+        /// This function ask the user if he want to install prolog
+        /// prolog
+        /// </summary>
+        /// <returns>If the user answer yes then it return true</returns>
+        
+        private Boolean askIfUserWantToInstallProlog()
+        {
+            //TODO : factorize it with askifuserwantto searchprolog
+            String message = "Prolog not found, do you want to install it?";
+            String caption = "Warning : Prolog not clearly find";
+            MessageBoxButtons buttons = MessageBoxButtons.YesNo;
+            return MessageBox.Show(message, caption, buttons) == System.Windows.Forms.DialogResult.Yes;
+        }
+
+        /// <summary>
+        /// This fucntion search recursively fileToSearch from the root folder dirTosearch
+        /// </summary>
+        /// <param name="dirToSearch"></param>
+        /// <param name="fileToSearch"></param>
+        /// <returns>the path where the file is</returns>
+        private String directorySearch(String dirToSearch, String fileToSearch)
+        {
+            try
+            {
+                foreach (String f in Directory.GetFiles(dirToSearch, fileToSearch))
+                {
+                    Console.WriteLine(fileToSearch + " found in " + dirToSearch);
+                    return dirToSearch;
+                }
+
+                foreach (String d in Directory.GetDirectories(dirToSearch))
+                {
+                    foreach (String f in Directory.GetFiles(d, fileToSearch))
+                    {
+                        Console.WriteLine(fileToSearch + " found in " + d);
+                        return d;
+                    }
+                    return this.directorySearch(d, fileToSearch);
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Something Really Bad append :(" + e.Message);
+            }
+            return null;
         }
 
     }
