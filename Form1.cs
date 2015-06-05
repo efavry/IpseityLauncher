@@ -20,7 +20,7 @@ namespace IpseityLauncher
         private Boolean boolIpseityFoundOnStart;
         private Boolean boolPrologFoundOnStart;
         private String stringCurrentDirectory;
-
+           
         public Form1()
         {
             InitializeComponent();
@@ -62,6 +62,10 @@ namespace IpseityLauncher
             catch (UnauthorizedAccessException ex)
             {
                 MessageBox.Show("The launcher does not have enough right to access the current directory" + ex.ToString());
+            }
+            catch (Exception generalEx)
+            {
+                MessageBox.Show("Something really bad happened an exception was raised" + generalEx.ToString());
             }
         }
 
