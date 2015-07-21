@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Microsoft.Win32;
 
 using System.Collections.Specialized;
 
@@ -17,8 +18,8 @@ namespace IpseityLauncher
     {
         private String stringIpseityRootFolder;
         private String stringPrologFolder;
-        private Boolean boolIpseityFoundOnStart;
-        private Boolean boolPrologFoundOnStart;
+        private Boolean boolIpseityFoundOnStart=false;
+        private Boolean boolPrologFoundOnStart=false;
         private String stringCurrentDirectory;
            
         public Form1()
@@ -42,15 +43,28 @@ namespace IpseityLauncher
                 //detect if ipseity is in the correct folder (root folder is the same than the launcher)
                 boolIpseityFoundOnStart = this.findIpseity();
 
-                //Same here but for prolog in the program files folder
-                boolPrologFoundOnStart = this.findProlog();
+
+                boolPrologFoundOnStart = this.findPrologFromReg(); //No need to test if prolog is already found
 
 
-                //if prolog not found, try to find ?
-                boolPrologFoundOnStart = this.findPrologRecursively();
+                //if prolog not found then try to find it in the program files folder
+                if (!boolPrologFoundOnStart)
+                {
+                    boolPrologFoundOnStart = this.findProlog();
+                }
 
-                //if prolog not found, execute installer ?
-                boolPrologFoundOnStart = this.installProlog();
+                if (!boolPrologFoundOnStart)
+                {
+                    //if prolog not found, try to find ?
+                    boolPrologFoundOnStart = this.findPrologRecursively();
+                }
+
+
+                if (!boolPrologFoundOnStart)
+                {
+                    //if prolog not found, execute installer ?
+                    boolPrologFoundOnStart = this.installProlog();
+                }
 
                 //if all is detected start ipseity
                 if (boolPrologFoundOnStart && boolIpseityFoundOnStart)
@@ -61,11 +75,11 @@ namespace IpseityLauncher
             }
             catch (UnauthorizedAccessException ex)
             {
-                MessageBox.Show("The launcher does not have enough right to access the current directory" + ex.ToString());
+                MessageBox.Show("The launcher does not have enough right to access the current directory \n" + ex.ToString());
             }
             catch (Exception generalEx)
             {
-                MessageBox.Show("Something really bad happened an exception was raised" + generalEx.ToString());
+                MessageBox.Show("Something really bad happened an exception was raised \n" + generalEx.ToString());
             }
         }
 
@@ -98,19 +112,61 @@ namespace IpseityLauncher
         private bool findPrologRecursively()
         {
             String prologOnRecursiveSearch = null;
-            if (!boolPrologFoundOnStart && boolIpseityFoundOnStart && this.askIfUserWantToSearchProlog())
-            {
-                prologOnRecursiveSearch = this.directorySearch(stringIpseityRootFolder, "plcon.exe");
-                if (prologOnRecursiveSearch != null)
+
+                if(boolIpseityFoundOnStart && this.askIfUserWantToSearchProlog())
                 {
-                    //Hiding all that is unnecessary and put the correct path
-                    textBox_PrologFolder.Text = prologOnRecursiveSearch;
-                    label_PrologFolder.Visible = false;
-                    textBox_PrologFolder.Visible = false;
-                    textBox_Status.Text = textBox_Status.Text + "Prolog found. ";
-                    return true;
+                    prologOnRecursiveSearch = this.directorySearch(stringIpseityRootFolder, "plcon.exe");
+                    if (prologOnRecursiveSearch != null)
+                    {
+                        //Hiding all that is unnecessary and put the correct path
+                        textBox_PrologFolder.Text = prologOnRecursiveSearch;
+                        label_PrologFolder.Visible = false;
+                        textBox_PrologFolder.Visible = false;
+                        textBox_Status.Text = textBox_Status.Text + "Prolog found. ";
+                        return true;
+                    }
+                }
+            
+            return false;
+        }
+
+
+        /// <summary>
+        /// Try to acess the registery key wich contain the prolog path
+        /// </summary>
+        /// <returns></returns>
+        private bool findPrologFromReg()
+        {
+
+            try
+            {
+                stringPrologFolder = (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\SWI\Prolog", "home", null);
+                if (stringPrologFolder != null)
+                {
+                    MessageBox.Show(stringPrologFolder);
+                    if (File.Exists(stringPrologFolder + @"\bin\plcon.exe"))
+                    {
+                        //Hiding all that is unnecessary and put the correct path
+                        //TODO : To factorise !
+                        textBox_PrologFolder.Text = stringPrologFolder;
+                        label_PrologFolder.Visible = false;
+                        textBox_PrologFolder.Visible = false;
+                        textBox_Status.Text = textBox_Status.Text + "Prolog found. ";
+                        stringPrologFolder = null;
+                        return true;
+                    }
+
                 }
             }
+            catch (IOException IOEx)
+            {
+                MessageBox.Show("An input output exception was raised \n" + IOEx.ToString());
+            }
+            catch (ArgumentException ArguEx)
+            {
+                MessageBox.Show("An ArgumentException exception was raised \n" + ArguEx.ToString());
+            }
+            stringPrologFolder = null;
             return false;
         }
 
@@ -168,16 +224,18 @@ namespace IpseityLauncher
             textBox_RootFolder.Enabled = false;
             textBox_PrologFolder.Enabled = false;
 
-            //We get the text of the textbox
+            //We get the text of the 
             stringIpseityRootFolder = textBox_RootFolder.Text;
             stringPrologFolder = textBox_PrologFolder.Text;
 
-            if (//Test if the path are correct by checking on of the essential file that must be contained
+            if (//Test if the path are correct by checking if the essential file are inside the folder
                 File.Exists(stringIpseityRootFolder + @"\app\IpseityProject\binary\1.2.2\win\Ipseity.exe") &&
                 File.Exists(stringPrologFolder + @"\bin\plcon.exe")
                 )
             {
                 //Concatenate all the path correctly without overwriting the content of the original
+
+                //TODO : Check the end of the actual path to see if if the path is finished by a ; and if not add it
                 Environment.SetEnvironmentVariable(
                                                     "PATH", Environment.GetEnvironmentVariable("PATH") +
                     /*The Lib to know :*/ stringIpseityRootFolder + @"\lib\win\Qt_Libraries" +
